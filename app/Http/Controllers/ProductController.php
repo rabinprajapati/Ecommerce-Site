@@ -15,12 +15,46 @@ class ProductController extends Controller
     public function index()
     {
         $products=Product::all();
-        return view('index',['products'=>$products]);
+        return view('product/index',['products'=>$products]);
     }
+    public function create(Request $req)
+    {
+        $product=new Product();
+        // $req->validate([
+        //     'productName'=>'required|max:30',
+        //     'productCategory'=>'required|max:20',
+        //     'productPrice'=>'required',
+        //     'productDescription'=>'required|max:255',
+        //     'productGallery'=>'required|image|min:1024|max:2048',
+        // ]);
+        $product->productName=$req->productName;
+        $product->productCategory=$req->productCategory;
+        $product->productPrice=$req->productPrice;
+        $product->productDescription=$req->productDescription;
+        $productImage=$req->file('productGallery');
+        $productName=rand().'.'.$productImage->getClientOriginalExtension();
+        $product->productGallery=$productName;
+        $productImage->move(public_path('product'),$productName);
+        $product->Save();
+        return redirect('/admin/product/list');;
+    }
+
+    public function list()
+    {
+        $products=Product::all();
+        return view('/product/productList',['products'=>$products]);
+    }
+
+    public function delete($id)
+    {
+        Product::destroy($id);
+        return redirect('/admin/product/list');
+    }
+
     public function detail($id)
     {
         $product=Product::find($id);
-        return view('detail',['product'=>$product]);
+        return view('product/detail',['product'=>$product]);
     }
     public function search(Request $req)
     {
@@ -31,7 +65,7 @@ class ProductController extends Controller
             return view('noResult');
         }
         else{
-            return view('index',['products'=>$products]);
+            return view('product/index',['products'=>$products]);
         }
         
     }
@@ -60,7 +94,10 @@ class ProductController extends Controller
                     ->where('cart.userId',$userId)
                     ->select('products.*','cart.id as cartId')
                     ->get();
-        return view('cart',['cartlist'=>$products]);
+        if($products->count()==0)
+            return 'no items in cart';
+        else
+        return view('product/cart',['cartlist'=>$products]);
     }
     public function removeCart($id)
     {   
@@ -72,5 +109,8 @@ class ProductController extends Controller
         $userId=Session::get('user')->id;
         $count=Cart::where('userId',$userId)->count();
         return $count;
+    }
+    static public function cartTotal(){
+        return 12000;
     }
 }

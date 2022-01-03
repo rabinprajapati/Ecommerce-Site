@@ -17,11 +17,20 @@ use App\Http\Controllers\UserController;
 Route::view('/register','register');
 Route::get('/',[ProductController::class,'index']);
 Route::get('/detail/{id}',[ProductController::class,'detail']);
-Route::post('/search',[ProductController::class,'search']);
+Route::post('/search',[ProductController::class,'search'])->middleware('guard');
 
-Route::post('/addToCart',[ProductController::class,'addToCart']);
-Route::get('/cart',[ProductController::class,'cart']);
-Route::get('/removeCart/{id}',[ProductController::class,'removeCart']);
+Route::post('/addToCart',[ProductController::class,'addToCart'])->middleware('guard');
+Route::get('/cart',[ProductController::class,'cart'])->middleware('guard');
+Route::get('/removeCart/{id}',[ProductController::class,'removeCart'])->middleware('guard');
+
+Route::group(['prefix'=>'/admin/product'],function()
+{
+    Route::view('/add','/product/add');
+    Route::post('/add',[ProductController::class,'create']);
+    Route::get('/list',[ProductController::class,'list']);
+    Route::get('/delete/{id}',[ProductController::class,'delete']);
+});
+
 
 Route::view('/login','login');
 Route::post('/register',[UserController::class,'register']);

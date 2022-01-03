@@ -20,25 +20,30 @@
         <li class="nav-item active">
           <a class="nav-link" href="/">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
         @if(Session::has('user'))
-        <li class="nav-item dropdown">
+          <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{Session::get('user')->userName}}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="/logout">Logout</a>
           </div>
-        </li>
+          </li>
+          @if((Session::get('user')->userName)=='admin')
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/product/add">add product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/product/list">product list</a>
+          </li>
+          @endif
         @else
-        <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/register">Register</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
         @endif
       </ul>
       <form class="form-inline my-2 my-lg-0" action="/search" method="POST">
@@ -46,9 +51,9 @@
         <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
-      @if(Session::has('user'))
-      <a href="/cart">Cart({{$total}})</a>
-      @endif
+        @if(Session::has('user'))
+          <a href="/cart">Cart({{$total}})</a>
+        @endif
     </div>
   </nav>
   <style>

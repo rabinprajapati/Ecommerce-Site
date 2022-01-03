@@ -8,9 +8,9 @@
           <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
         </ol>
         <div class="carousel-inner">
-          @foreach ($products as $item)
-          <div class="carousel-item {{$item->id==1?'active':''}}">
-            <img class="d-block w-50" src={{$item->productGallery}} alt="First slide">
+          @foreach ($products as $product)
+          <div class="carousel-item {{$product->id==1?'active':''}}">
+            <img class="d-block w-50" src={{url('product',$product->productGallery)}} alt="First slide">
           </div>
           @endforeach
         </div>
@@ -27,7 +27,7 @@
           <div class="row">
                 @foreach ($products as $item)
                 <div class="col-sm-3">
-                  <a href="/detail/{{$item->id}}"><img class="indexImage" src={{$item->productGallery}} ></a>
+                  <a href="/detail/{{$item->id}}"><img class="indexImage" src={{url('product',$item->productGallery)}} ></a>
                   <h3>{{$item->productName}}</h3>
                   <h2>{{$item->productPrice}}</h2>
                   <button class="btn btn-primary">buy</button>
@@ -38,6 +38,6 @@
                 </form>
                 </div>
                 @endforeach
-              </div>
+            </div>
       </div>
 @endsection

@@ -33,7 +33,7 @@ class UserController extends Controller
     }
     public function logout()
     {
-        Session::forget('user');
+        Session::forget('user','admin');
         return view('login');
     }
 }
