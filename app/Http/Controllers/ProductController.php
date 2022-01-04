@@ -7,7 +7,7 @@ use App\Models\Product;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\File;
 
 
 class ProductController extends Controller
@@ -36,7 +36,7 @@ class ProductController extends Controller
         $product->productGallery=$productName;
         $productImage->move(public_path('product'),$productName);
         $product->Save();
-        return redirect('/admin/product/list');;
+        return redirect('/admin/product/list');
     }
 
     public function list()
@@ -47,7 +47,30 @@ class ProductController extends Controller
 
     public function delete($id)
     {
-        Product::destroy($id);
+        $product=Product::find($id);
+        $destination='product/'.$product->productGallery;
+        if(File::exists($destination))
+        {
+            File::delete($destination);
+        }
+        $product->delete();
+        //Product::destroy($id);
+        return redirect('/admin/product/list')->with('status','item deleted');
+    }
+
+    public function edit($id)
+    {
+        $product=Product::find($id);
+        return view('product/edit',['product'=>$product]);
+    }
+    public function update(Request $req,$id)
+    {
+        $product=Product::find($id);
+        $product->productName=$req->productName;
+        $product->productCategory=$req->productCategory;
+        $product->productPrice=$req->productPrice;
+        $product->productDescription=$req->productDescription;
+        $product->save();
         return redirect('/admin/product/list');
     }
 
@@ -102,7 +125,7 @@ class ProductController extends Controller
     public function removeCart($id)
     {   
         Cart::destroy($id);
-        return redirect('/cart');
+        return redirect('/cart')->with('status','item removed from cart');
     }
 
     static public function cartItem(){
@@ -111,6 +134,11 @@ class ProductController extends Controller
         return $count;
     }
     static public function cartTotal(){
-        return 12000;
+        $userId=Session::get('user')->id;
+        $total=DB::table('cart')
+            ->join('products','cart.productId','=','products.id')
+            ->where('cart.userId',$userId)
+            ->sum('products.productPrice');
+        return $total;
     }
 }

@@ -17,7 +17,7 @@ use App\Http\Controllers\UserController;
 Route::view('/register','register');
 Route::get('/',[ProductController::class,'index']);
 Route::get('/detail/{id}',[ProductController::class,'detail']);
-Route::post('/search',[ProductController::class,'search'])->middleware('guard');
+Route::post('/search',[ProductController::class,'search']);
 
 Route::post('/addToCart',[ProductController::class,'addToCart'])->middleware('guard');
 Route::get('/cart',[ProductController::class,'cart'])->middleware('guard');
@@ -28,6 +28,8 @@ Route::group(['prefix'=>'/admin/product'],function()
     Route::view('/add','/product/add');
     Route::post('/add',[ProductController::class,'create']);
     Route::get('/list',[ProductController::class,'list']);
+    Route::get('/edit/{id}',[ProductController::class,'edit']);
+    Route::post('/update/{id}',[ProductController::class,'update']);
     Route::get('/delete/{id}',[ProductController::class,'delete']);
 });
 
